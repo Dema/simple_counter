@@ -37,7 +37,7 @@ size:
 		avr-size -C --mcu=$(MCU_TARGET) $(PRG).elf
 
 clean:
-	rm -rf *.o $(PRG).elf *.eps *.png *.pdf *.bak *.hex *.bin *.srec
+	rm -rf *.o $(PRG).elf *.eps *.png *.pdf *.bak *.hex *.bin *.srec *~
 	rm -rf *.lst *.map $(EXTRA_CLEAN_FILES)
  
 lst:  $(PRG).lst
