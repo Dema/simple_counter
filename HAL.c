@@ -1,8 +1,8 @@
 #include <HAL.h>
- inline void
-InitAll (void) 
+inline void
+InitAll (void)
 {
-  
+
 //InitPort
-    LED_DDR |= 1 << LED1;
-} 
+  LED_DDR |= 1 << LED1;
+}
