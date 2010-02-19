@@ -6,7 +6,7 @@ MCU_TARGET     = attiny2313
 AVRDUDE_TARGET = attiny2313
 Q_OPT		   =  -fgcse-las -fgcse-sm -fmodulo-sched -fmodulo-sched-allow-regmoves \
 				 -freorder-blocks -freorder-blocks-and-partition -freschedule-modulo-scheduled-loops \
-				 -frtl-abstract-sequences -fschedule-insns -fsched-spec-load-dangerous -fsched-stalled-insns=0 
+				 -frtl-abstract-sequences -fsched-spec-load-dangerous -fsched-stalled-insns=0 
 OPTIMIZE       = -Os -fshort-enums -fcse-skip-blocks \
 				 -fgcse-after-reload -fipa-cp -fipa-matrix-reorg -fpredictive-commoning 
 OPTIMIZE	   += $(Q_OPT)
