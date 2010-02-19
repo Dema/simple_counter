@@ -41,7 +41,8 @@ SetTask (TPTR TS)
   u08 nointerrupted = 0;
   if (STATUS_REG & (1 << Interrupt_Flag))	// Если прерывания разрешены, то запрещаем их.
     {
-      Disable_Interrupt  nointerrupted = 1;	// И ставим флаг, что мы не в прерывании. 
+      cli();
+      nointerrupted = 1;	// И ставим флаг, что мы не в прерывании. 
     }
   while (TaskQueue[index] != Idle)	// Прочесываем очередь задач на предмет свободной ячейки
     {				// с значением Idle - конец очереди.
@@ -49,7 +50,7 @@ SetTask (TPTR TS)
       if (index == TaskQueueSize + 1)	// Если очередь переполнена то выходим не солоно хлебавши
 	{
 	  if (nointerrupted)
-	    Enable_Interrupt	// Если мы не в прерывании, то разрешаем прерывания
+	    sei();	// Если мы не в прерывании, то разрешаем прерывания
 	      return;		// Раньше функция возвращала код ошибки - очередь переполнена. Пока убрал.
 	}
     }
@@ -57,8 +58,8 @@ SetTask (TPTR TS)
     // Если нашли свободное место, то
     TaskQueue[index] = TS;	// Записываем в очередь задачу
   if (nointerrupted)
-    Enable_Interrupt		// И включаем прерывания если не в обработчике прерывания.
-    } 
+    sei();		// И включаем прерывания если не в обработчике прерывания.
+    }
 //Функция установки задачи по таймеру. Передаваемые параметры - указатель на функцию, 
 // Время выдержки в тиках системного таймера. Возвращет код ошибки.
     void SetTimerTask (TPTR TS, u16 NewTime) 
@@ -67,7 +68,8 @@ SetTask (TPTR TS)
     u08 nointerrupted = 0;
     if (STATUS_REG & (1 << Interrupt_Flag))	// Проверка запрета прерывания, аналогично функции выше
       {
-	Disable_Interrupt  nointerrupted = 1;
+	cli();
+    nointerrupted = 1;
       }
     for (index = 0; index != MainTimerQueueSize + 1; ++index)	//Прочесываем очередь таймеров
       {
@@ -75,7 +77,7 @@ SetTask (TPTR TS)
 	  {
 	    MainTimer[index].Time = NewTime;	// Перезаписываем ей выдержку
 	    if (nointerrupted)
-	      Enable_Interrupt	// Разрешаем прерывания если не были запрещены.
+	      sei();	// Разрешаем прерывания если не были запрещены.
 		return;		// Выходим. Раньше был код успешной операции. Пока убрал
 	  }
       }
@@ -87,7 +89,7 @@ SetTask (TPTR TS)
 	    MainTimer[index].GoToTask = TS;	// Заполняем поле перехода задачи
 	    MainTimer[index].Time = NewTime;	// И поле выдержки времени
 	    if (nointerrupted)
-	      Enable_Interrupt	// Разрешаем прерывания
+	      sei();	// Разрешаем прерывания
 		return;		// Выход. 
 	  }
       }			// тут можно сделать return c кодом ошибки - нет свободных таймеров
@@ -100,11 +102,11 @@ SetTask (TPTR TS)
   {
     u08 index = 0;
     TPTR GoToTask = Idle;	// Инициализируем переменные
-    Disable_Interrupt		// Запрещаем прерывания!!!
+    cli();		// Запрещаем прерывания!!!
       GoToTask = TaskQueue[0];	// Хватаем первое значение из очереди
     if (GoToTask == Idle)	// Если там пусто
       {
-	Enable_Interrupt	// Разрешаем прерывания
+	sei();	// Разрешаем прерывания
 	  (Idle) ();		// Переходим на обработку пустого цикла
       }
     
@@ -116,7 +118,7 @@ SetTask (TPTR TS)
 	    TaskQueue[index] = TaskQueue[index + 1];
 	  }
 	TaskQueue[TaskQueueSize] = Idle;	// В последнюю запись пихаем затычку
-	Enable_Interrupt	// Разрешаем прерывания
+	sei();	// Разрешаем прерывания
 	  (GoToTask) ();	// Переходим к задаче
       }
   }
