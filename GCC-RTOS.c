@@ -9,13 +9,17 @@ ISR (RTOS_ISR) {
 // Глобальные переменные ====================================================
 
 struct Buttons {
-unsigned      plusButtonPressed:1;
-unsigned    plusButtonHolded:1;
-unsigned minusButtonPressed:1;
-unsigned minusButtonHolded:1;
+  unsigned        plusButtonPressed:1;
+  unsigned        plusButtonHolded:1;
+  unsigned        minusButtonPressed:1;
+  unsigned        minusButtonHolded:1;
 } buttons;
 
 int             number = 0;
+
+int             digits[3];
+
+unsigned char   currentIndicatorDigit = 0;
 
 // Прототипы задач ===========================================================
 void
@@ -35,6 +39,10 @@ void            checkButtonsHold (void);
 void            checkDebouncedButtonsOff (void);
 
 void            processButtons (void);
+
+void
+number2digits (void) {
+}
 
 //============================================================================
 //Область задач
@@ -117,12 +125,15 @@ checkButtonsHold (void) {
 
 void
 processButtons (void) {
+  unsigned char   updated = 0;
+
   if (buttons.plusButtonPressed) {
     if (buttons.plusButtonHolded) {
       number += 10;
     } else {
       number++;
     }
+    updated = 1;
   }
   if (buttons.minusButtonPressed) {
     if (buttons.minusButtonHolded) {
@@ -130,9 +141,17 @@ processButtons (void) {
     } else {
       number--;
     }
+    updated = 1;
+  }
+  if (updated) {
+    number2digits ();
   }
 }
 
+void
+updateIndicator (void) {
+//INDICATOR_DIGITS_PORT = 
+}
 
 //==============================================================================
 void __attribute__ ((naked)) main (void) {
@@ -141,14 +160,15 @@ void __attribute__ ((naked)) main (void) {
   RunRTOS ();			// Старт ядра. 
 
 
-buttons.plusButtonPressed = 0;
-buttons.minusButtonPressed = 0;
-buttons.plusButtonHolded = 0;
-buttons.minusButtonHolded = 0;
+  buttons.plusButtonPressed = 0;
+  buttons.minusButtonPressed = 0;
+  buttons.plusButtonHolded = 0;
+  buttons.minusButtonHolded = 0;
 
 
 // Запуск фоновых задач.
-  SetTask (checkButtonsOn);
+  SetTimerTask (checkButtonsOn, 50);
+  SetTimerTask (updateIndicator, 5);
   while (1)			// Главный цикл диспетчера
   {
     wdt_reset ();		// Сброс собачьего таймера
