@@ -11,8 +11,8 @@
 
 //System Timer Config
 #   define Prescaler	  		64
-#   define	TimerDivider  		((F_CPU/Prescaler + 1000 / 2)/1000)
-									// 1 mS
+#   define TIMER_TICK_MILLIS       1
+#   define	TimerDivider  		((F_CPU/Prescaler + TIMER_TICK_MILLIS*1000 / 2)/(TIMER_TICK_MILLIS*1000))	// 1 mS
 
 //USART Config
 #   define BAUDRATE 9600L
@@ -39,8 +39,12 @@
 #   define INDICATOR_DDR  DDRB
 
 
+// Задержки
 
-
+#   define DEBOUNCE_DELAY  30/TIMER_TICK_MILLIS
+#   define INDICATOR_DELAY 5/TIMER_TICK_MILLIS
+#   define KEYSCAN_DELAY   50/TIMER_TICK_MILLIS
+#   define HOLD_KEY_DELAY 500/TIMER_TICK_MILLIS
 
 extern void     InitAll (void);
 

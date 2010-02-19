@@ -51,18 +51,18 @@ number2digits (void) {
 void
 checkButtons (void) {
   if (buttons.plusButtonPressed || buttons.minusButtonPressed) {
-    SetTimerTask (checkButtonsOff, 50);
+    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, 50);
+    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
 void
 checkButtonsOn (void) {
   if (BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS)) {
-    SetTimerTask (checkDebouncedButtonsOn, 30);
+    SetTimerTask (checkDebouncedButtonsOn, DEBOUNCE_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, 50);
+    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
@@ -75,10 +75,10 @@ checkDebouncedButtonsOn (void) {
 
   if (b) {
     SetTask (processButtons);
-    SetTimerTask (checkButtonsOff, 50);
-    SetTimerTask (checkButtonsHold, 500);
+    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
+    SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, 50);
+    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
