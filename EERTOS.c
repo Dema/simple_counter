@@ -1,3 +1,4 @@
+#include<avr/sleep.h>
 #include <EERTOS.h>
 
 // Очереди задач, таймеров.
@@ -22,12 +23,14 @@ InitRTOS (void) {
     MainTimer[index].GoToTask = Idle;
     MainTimer[index].Time = 0;
   }
+  set_sleep_mode (SLEEP_MODE_IDLE);
 }
 
 
 //Пустая процедура - простой ядра. 
 void
 Idle (void) {
+  sleep_mode ();
 }
 
 // Функция установки задачи в очередь. Передаваемый параметр - указатель на функцию
