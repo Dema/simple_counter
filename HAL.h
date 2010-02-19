@@ -22,22 +22,26 @@
 #   define REAL_BAUDRATE  ((F_CPU + (BAUD_DIVIDER + 1) * 8) / ((BAUD_DIVIDER + 1)*16))
 #   define BAUDRATE_ERROR ((100L * (BAUDRATE - REAL_BAUDRATE) + BAUDRATE/2) / (BAUDRATE))
 
-#if BAUDRATE_ERROR < -2 || BAUDRATE_ERROR > 2
-    #warning "Неправильно задана константа BAUDRATE"
-#endif
+#   if BAUDRATE_ERROR < -2 || BAUDRATE_ERROR > 2
+#      warning "Неправильно задана константа BAUDRATE"
+#   endif
 
 #   define HI(x) ((x)>>8)
 #   define LO(x) ((x)& 0xFF)
 
 //PORT Defines
-#define LED1 		4
-#define LED2		5
-#define	LED3		7
+#   define BUTTONS_PORT    PORTD
+#   define BUTTONS_DDR     DDRD
+#   define BUTTONS_PIN    PIND
+#   define BUTTON_PLUS     4
+#   define BUTTON_MINUS    5
+#   define INDICATOR_PORT  PORTB
+#   define INDICATOR_DDR  DDRB
 
-#define I_C			3
-#define I_L			6
-#define LED_PORT 	PORTD
-#define LED_DDR		DDRD
-extern void InitAll (void);
+
+
+
+
+extern void     InitAll (void);
 
 #endif /*  */
