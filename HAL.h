@@ -22,10 +22,9 @@
 #   define REAL_BAUDRATE  ((F_CPU + (BAUD_DIVIDER + 1) * 8) / ((BAUD_DIVIDER + 1)*16))
 #   define BAUDRATE_ERROR ((100L * (BAUDRATE - REAL_BAUDRATE) + BAUDRATE/2) / (BAUDRATE))
 
-//#if BAUDRATE_ERROR < -2 || BAUDRATE_ERROR > 2
-//    #error "Неправильно задана константа BAUDRATE:" REAL_BAUDRATE
-//double z = BAUDRATE_ERROR
-//#endif
+#if BAUDRATE_ERROR < -2 || BAUDRATE_ERROR > 2
+    #warning "Неправильно задана константа BAUDRATE"
+#endif
 
 #   define HI(x) ((x)>>8)
 #   define LO(x) ((x)& 0xFF)
