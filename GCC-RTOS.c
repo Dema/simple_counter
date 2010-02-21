@@ -2,24 +2,45 @@
 #include <EERTOS.h>
 
 //RTOS Interrupt
-ISR (RTOS_ISR) {
+ISR (TIMER0_COMPA_vect) {
+//ISR (RTOS_ISR) {
+
   TimerService ();
 }
 
 // Глобальные переменные ====================================================
 
-struct Buttons {
+#define SEG_ITEM(x) (x)
+//#   define SEG_ITEM(x) (x^255)
+
+unsigned char digit2segments[11] = {
+//             gfedcba
+  SEG_ITEM (0b00111111),	//0
+  SEG_ITEM (0b00000110),	//1
+  SEG_ITEM (0b01011011),	//2
+  SEG_ITEM (0b01001111),	//3
+  SEG_ITEM (0b01100110),	//4
+  SEG_ITEM (0b01101101),	//5
+  SEG_ITEM (0b01111101),	//6
+  SEG_ITEM (0b00000111),	//7
+  SEG_ITEM (0b01111111),	//8
+  SEG_ITEM (0b01101111),	//9
+  SEG_ITEM (0b01000000),	//-
+};
+
+
+volatile struct Buttons {
   unsigned        plusButtonPressed:1;
   unsigned        plusButtonHolded:1;
   unsigned        minusButtonPressed:1;
   unsigned        minusButtonHolded:1;
 } buttons;
 
-int             number = 0;
+volatile int    number = 0;
 
-int             digits[3];
+volatile int    digits[3];
 
-unsigned char   currentIndicatorDigit = 0;
+volatile unsigned char currentIndicatorDigit = 0;
 
 // Прототипы задач ===========================================================
 void
@@ -41,8 +62,7 @@ void            checkDebouncedButtonsOff (void);
 void            processButtons (void);
 
 void
-number2digits (void) {
-}
+number2digits (void);
 
 //============================================================================
 //Область задач
@@ -85,9 +105,9 @@ checkDebouncedButtonsOn (void) {
 void
 checkButtonsOff (void) {
   if (!(BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
-    SetTimerTask (checkDebouncedButtonsOff, 30);
+    SetTimerTask (checkDebouncedButtonsOff, DEBOUNCE_DELAY);
   } else {
-    SetTimerTask (checkButtonsOff, 50);
+    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
   }
 
 }
@@ -144,15 +164,35 @@ processButtons (void) {
     updated = 1;
   }
   if (updated) {
+    if(number <1) number = 1;
+    if(number > 999) number = 999;
     number2digits ();
   }
 }
 
 void
 updateIndicator (void) {
-//INDICATOR_DIGITS_PORT = 
+  if (currentIndicatorDigit != 2 && digits[currentIndicatorDigit] == 0) {
+  } else {
+    INDICATOR_SEGMENTS_PORT = digit2segments[digits[currentIndicatorDigit]];
+    INDICATOR_DIGITS_PORT = (INDICATOR_DIGITS_PORT & (255 - 7) ) | 1 << (2 - currentIndicatorDigit);
+  }
+  currentIndicatorDigit++;
+  if (currentIndicatorDigit > 2)
+    currentIndicatorDigit = 0;
+
+  SetTimerTask (updateIndicator, 5);
 }
 
+void
+number2digits () {
+  unsigned int    num = number;
+
+  digits[0] = num / 100;
+  num = num % 100;
+  digits[1] = num / 10;
+  digits[2] = num % 10;
+}
 //==============================================================================
 void __attribute__ ((naked)) main (void) {
   InitAll ();			// Инициализируем периферию
@@ -165,10 +205,10 @@ void __attribute__ ((naked)) main (void) {
   buttons.plusButtonHolded = 0;
   buttons.minusButtonHolded = 0;
 
-
 // Запуск фоновых задач.
   SetTimerTask (checkButtonsOn, 50);
   SetTimerTask (updateIndicator, 5);
+
   while (1)			// Главный цикл диспетчера
   {
     wdt_reset ();		// Сброс собачьего таймера

@@ -12,6 +12,8 @@ RunRTOS (void) {
   TCNT0 = 0;			// Установить начальное значение счётчиков
   OCR0A = LO (TimerDivider);	// Установить значение в регистр сравнения
   TIMSK = 0 << TOIE0 | 1 << OCIE0A;	// Разрешаем прерывание RTOS - запуск ОС
+#else
+#error "unknown AVR!!"
 #endif /*  */
   sei ();
 }

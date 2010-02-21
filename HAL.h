@@ -35,8 +35,10 @@
 #   define BUTTONS_PIN    PIND
 #   define BUTTON_PLUS     4
 #   define BUTTON_MINUS    5
-#   define INDICATOR_PORT  PORTB
-#   define INDICATOR_DDR  DDRB
+#   define INDICATOR_DIGITS_PORT  PORTD
+#   define INDICATOR_DIGITS_DDR  DDRD
+#   define INDICATOR_SEGMENTS_PORT  PORTB
+#   define INDICATOR_SEGMENTS_DDR  DDRB
 
 
 // Задержки
@@ -45,6 +47,7 @@
 #   define INDICATOR_DELAY 5/TIMER_TICK_MILLIS
 #   define KEYSCAN_DELAY   50/TIMER_TICK_MILLIS
 #   define HOLD_KEY_DELAY 500/TIMER_TICK_MILLIS
+
 
 extern void     InitAll (void);
 
