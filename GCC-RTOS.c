@@ -36,7 +36,7 @@ volatile struct Buttons {
   unsigned        minusButtonHolded:1;
 } buttons;
 
-volatile int    number = 0;
+volatile int    number = 1;
 
 volatile int    digits[3];
 
@@ -204,6 +204,7 @@ void __attribute__ ((naked)) main (void) {
   buttons.minusButtonPressed = 0;
   buttons.plusButtonHolded = 0;
   buttons.minusButtonHolded = 0;
+  number2digits();
 
 // Запуск фоновых задач.
   SetTimerTask (checkButtonsOn, 50);
