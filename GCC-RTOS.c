@@ -4,7 +4,6 @@
 //RTOS Interrupt
 ISR (TIMER0_COMPA_vect) {
 //ISR (RTOS_ISR) {
-
   TimerService ();
 }
 
@@ -195,16 +194,17 @@ number2digits () {
 }
 //==============================================================================
 void __attribute__ ((naked)) main (void) {
-  InitAll ();			// Инициализируем периферию
-  InitRTOS ();			// Инициализируем ядро
-  RunRTOS ();			// Старт ядра. 
-
 
   buttons.plusButtonPressed = 0;
   buttons.minusButtonPressed = 0;
   buttons.plusButtonHolded = 0;
   buttons.minusButtonHolded = 0;
   number2digits();
+
+  InitAll ();			// Инициализируем периферию
+  InitRTOS ();			// Инициализируем ядро
+  RunRTOS ();			// Старт ядра. 
+
 
 // Запуск фоновых задач.
   SetTimerTask (checkButtonsOn, 50);
