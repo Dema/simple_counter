@@ -203,8 +203,7 @@ void __attribute__ ((naked)) main (void) {
 
   InitAll ();			// Инициализируем периферию
   InitRTOS ();			// Инициализируем ядро
-  RunRTOS ();			// Старт ядра. 
-
+  RunRTOS ();			// Старт ядра
 
 // Запуск фоновых задач.
   SetTimerTask (checkButtonsOn, 50);
