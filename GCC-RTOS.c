@@ -9,8 +9,8 @@ ISR (TIMER0_COMPA_vect) {
 
 // Глобальные переменные ====================================================
 
-#define SEG_ITEM(x) (x)
-//#   define SEG_ITEM(x) (x^255)
+//#define SEG_ITEM(x) (x)
+#   define SEG_ITEM(x) (x^255)
 
 unsigned char digit2segments[11] = {
 //             gfedcba
@@ -35,9 +35,9 @@ volatile struct Buttons {
   unsigned        minusButtonHolded:1;
 } buttons;
 
-volatile int    number = 1;
+volatile unsigned int    number = 1;
 
-volatile int    digits[3];
+volatile unsigned char    digits[3];
 
 volatile unsigned char currentIndicatorDigit = 0;
 
