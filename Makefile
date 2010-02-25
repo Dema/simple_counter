@@ -83,7 +83,7 @@ esrec: $(PRG)_eeprom.srec
  
 # command to program chip (invoked by running "make install")
 install:  $(PRG).hex
-	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT) -v  \
+	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT)  \
          -U flash:w:$(PRG).hex 
  
 fuse:
