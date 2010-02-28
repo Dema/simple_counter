@@ -1,5 +1,5 @@
-PRG            = GCC-RTOS
-OBJ            = GCC-RTOS.o EERTOS.o EERTOSHAL.o HAL.o
+PRG            = counter
+OBJ            = counter.o EERTOS.o EERTOSHAL.o HAL.o
 PROGRAMMER     = usbasp
 PORT           = usb
 MCU_TARGET     = attiny2313
