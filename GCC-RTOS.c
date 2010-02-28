@@ -136,7 +136,7 @@ checkButtonsHold (void) {
     (b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
   if (b) {
-    SetTimerTask (checkButtonsHold, 500);
+    SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
   }
 
   checkButtons ();
@@ -180,7 +180,7 @@ updateIndicator (void) {
   if (currentIndicatorDigit > 2)
     currentIndicatorDigit = 0;
 
-  SetTimerTask (updateIndicator, 5);
+  SetTimerTask (updateIndicator, INDICATOR_DELAY);
 }
 
 void
@@ -199,6 +199,7 @@ void __attribute__ ((naked)) main (void) {
   buttons.minusButtonPressed = 0;
   buttons.plusButtonHolded = 0;
   buttons.minusButtonHolded = 0;
+
   number2digits();
 
   InitAll ();			// Инициализируем периферию
@@ -206,8 +207,8 @@ void __attribute__ ((naked)) main (void) {
   RunRTOS ();			// Старт ядра
 
 // Запуск фоновых задач.
-  SetTimerTask (checkButtonsOn, 50);
-  SetTimerTask (updateIndicator, 5);
+  SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
+  SetTimerTask (updateIndicator, INDICATOR_DELAY);
 
   while (1)			// Главный цикл диспетчера
   {
