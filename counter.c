@@ -78,7 +78,7 @@ checkButtons (void) {
 
 void
 checkButtonsOn (void) {
-  if (BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS)) {
+  if (!(BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
     SetTimerTask (checkDebouncedButtonsOn, DEBOUNCE_DELAY);
   } else {
     SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
@@ -89,10 +89,10 @@ void
 checkDebouncedButtonsOn (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
-  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 1 : 0;
-  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 1 : 0;
+  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 0 : 1;
+  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 0 : 1;
 
-  if (b) {
+  if (!b) {
     SetTask (processButtons);
     SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
     SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
@@ -103,7 +103,7 @@ checkDebouncedButtonsOn (void) {
 
 void
 checkButtonsOff (void) {
-  if (!(BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
+  if ((BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
     SetTimerTask (checkDebouncedButtonsOff, DEBOUNCE_DELAY);
   } else {
     SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
@@ -115,8 +115,8 @@ void
 checkDebouncedButtonsOff (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
-  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 1 : 0;
-  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 1 : 0;
+  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 0 : 1;
+  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 0 : 1;
 
   if (!buttons.plusButtonPressed)
     buttons.plusButtonHolded = 0;
@@ -131,9 +131,9 @@ checkButtonsHold (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
   buttons.plusButtonHolded = buttons.plusButtonPressed =
-    (b & (1 << BUTTON_PLUS)) ? 1 : 0;
+    (b & (1 << BUTTON_PLUS)) ? 0 : 1;
   buttons.minusButtonHolded = buttons.minusButtonPressed =
-    (b & (1 << BUTTON_MINUS)) ? 1 : 0;
+    (b & (1 << BUTTON_MINUS)) ? 0 : 1;
 
   if (b) {
     SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
