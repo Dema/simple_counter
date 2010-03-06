@@ -174,7 +174,7 @@ updateIndicator (void) {
   if (currentIndicatorDigit != 2 && digits[currentIndicatorDigit] == 0) {
   } else {
     INDICATOR_SEGMENTS_PORT = digit2segments[digits[currentIndicatorDigit]];
-    INDICATOR_DIGITS_PORT = (INDICATOR_DIGITS_PORT & (255 - 7) ) | 1 << (2 - currentIndicatorDigit);
+    INDICATOR_DIGITS_PORT = (INDICATOR_DIGITS_PORT & (0xFF - 0b111) ) | 1 << (2 - currentIndicatorDigit);
   }
   currentIndicatorDigit++;
   if (currentIndicatorDigit > 2)
