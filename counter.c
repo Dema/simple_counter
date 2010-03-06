@@ -89,10 +89,10 @@ void
 checkDebouncedButtonsOn (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
-  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 0 : 1;
-  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 0 : 1;
+  buttons.plusButtonPressed = !(b & (1 << BUTTON_PLUS)) ? 1 : 0;
+  buttons.minusButtonPressed = !(b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
-  if (!b) {
+  if (buttons.plusButtonPressed || buttons.minusButtonPressed) {
     SetTask (processButtons);
     SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
     SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
@@ -115,8 +115,8 @@ void
 checkDebouncedButtonsOff (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
-  buttons.plusButtonPressed = (b & (1 << BUTTON_PLUS)) ? 0 : 1;
-  buttons.minusButtonPressed = (b & (1 << BUTTON_MINUS)) ? 0 : 1;
+  buttons.plusButtonPressed = !(b & (1 << BUTTON_PLUS)) ? 1 : 0;
+  buttons.minusButtonPressed = !(b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
   if (!buttons.plusButtonPressed)
     buttons.plusButtonHolded = 0;
@@ -131,11 +131,11 @@ checkButtonsHold (void) {
   unsigned char   b = BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS);
 
   buttons.plusButtonHolded = buttons.plusButtonPressed =
-    (b & (1 << BUTTON_PLUS)) ? 0 : 1;
+    !(b & (1 << BUTTON_PLUS)) ? 1 : 0;
   buttons.minusButtonHolded = buttons.minusButtonPressed =
-    (b & (1 << BUTTON_MINUS)) ? 0 : 1;
+    !(b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
-  if (b) {
+  if (buttons.plusButtonHolded || buttons.minusButtonHolded) {
     SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
   }
 
