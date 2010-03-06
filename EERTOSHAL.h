@@ -12,7 +12,7 @@
        /*  */
 
 #   define	TaskQueueSize		5
-#   define MainTimerQueueSize  10
+#   define MainTimerQueueSize  5
 extern void     RunRTOS (void);
 
 #endif /*  */
