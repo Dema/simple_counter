@@ -6,3 +6,4 @@
 *.elf
 *.o
 *.srec
+tags
