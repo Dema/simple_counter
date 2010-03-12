@@ -68,14 +68,14 @@ eeprom: ehex ebin esrec
  
  
 ehex:  $(PRG)_eeprom.hex
-#ebin:  $(PRG)_eeprom.bin
+ebin:  $(PRG)_eeprom.bin
 esrec: $(PRG)_eeprom.srec
  
 %_eeprom.hex: %.elf
 	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O ihex $< $@
  
-#%_eeprom.srec: %.elf
-#	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O srec $< $@
+%_eeprom.srec: %.elf
+	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O srec $< $@
  
 %_eeprom.bin: %.elf
 	$(OBJCOPY) -j .eeprom --change-section-lma .eeprom=0 -O binary $< $@
@@ -84,11 +84,15 @@ esrec: $(PRG)_eeprom.srec
 # command to program chip (invoked by running "make install")
 install:  $(PRG).hex
 	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT)  \
-         -U flash:w:$(PRG).hex 
+         -U flash:w:$(PRG).hex
+
+install_eeprom:  $(PRG).hex
+	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT)  \
+         -U eeprom:w:$(PRG)_eeprom.hex
  
 fuse:
 	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT) -v \
-	-U lfuse:w:0xc6:m -U hfuse:w:0xd9:m 	
+	-U lfuse:w:0xc6:m -U hfuse:w:0xd9:m
  
 ddd: gdbinit
 	ddd --debugger "avr-gdb -x $(GDBINITFILE)"

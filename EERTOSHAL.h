@@ -12,7 +12,7 @@
        /*  */
 
 #   define	TASK_QUEUE_SIZE		5
-#   define MAIN_TIMER_QUEUE_SIZE  5
+#   define MAIN_TIMER_QUEUE_SIZE  10
 extern void     runRTOS (void);
 
 #endif /*  */
