@@ -7,8 +7,8 @@ AVRDUDE_TARGET = attiny2313
 Q_OPT		   =  -fgcse-las -fgcse-sm -fmodulo-sched -fmodulo-sched-allow-regmoves \
 				 -freorder-blocks -freorder-blocks-and-partition -freschedule-modulo-scheduled-loops \
 				 -frtl-abstract-sequences -fsched-spec-load-dangerous -fsched-stalled-insns=0 
-OPTIMIZE       = -Os -fshort-enums -fcse-skip-blocks \
-				 -fgcse-after-reload -fipa-cp -fipa-matrix-reorg -fpredictive-commoning 
+OPTIMIZE       = -Os -fshort-enums -fcse-skip-blocks -fomit-frame-pointer -Wl,--gc-section -ffunction-sections -fdata-sections\
+				 -fgcse-after-reload -fipa-cp -fipa-matrix-reorg -fpredictive-commoning
 OPTIMIZE	   += $(Q_OPT)
 				 
 DEFS           = -I.
@@ -22,7 +22,7 @@ CC             = avr-gcc
  
 # Override is only needed by avr-lib build system.
  
-override CFLAGS        = -g -DF_CPU=$(HZ)L -Wall $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(DEFS)
+override CFLAGS        =-gdwarf-2 -DF_CPU=$(HZ)L -Wall -Winline -Wextra $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(DEFS)
 override LDFLAGS       = -Wl,-Map,$(PRG).map
  
 OBJCOPY        = avr-objcopy
