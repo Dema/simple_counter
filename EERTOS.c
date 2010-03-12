@@ -3,22 +3,22 @@
 
 // Очереди задач, таймеров.
 // Тип данных - указатель на функцию
-volatile static TPTR TaskQueue[TaskQueueSize + 1];	// очередь указателей
+volatile static TPTR TaskQueue[TASK_QUEUE_SIZE + 1];	// очередь указателей
 
 volatile static struct {
   TPTR            GoToTask;	// Указатель перехода
   u16             Time;		// Выдержка в мс
-} MainTimer[MainTimerQueueSize + 1];	// Очередь таймеров
+} MainTimer[MAIN_TIMER_QUEUE_SIZE + 1];	// Очередь таймеров
 
 // RTOS Подготовка. Очистка очередей
 inline void
 InitRTOS (void) {
   u08             index;
 
-  for (index = 0; index != TaskQueueSize + 1; index++) {	// Во все позиции записываем Idle
+  for (index = 0; index != TASK_QUEUE_SIZE + 1; index++) {	// Во все позиции записываем Idle
     TaskQueue[index] = Idle;
   }
-  for (index = 0; index != MainTimerQueueSize + 1; index++)	// Обнуляем все таймеры.
+  for (index = 0; index != MAIN_TIMER_QUEUE_SIZE + 1; index++)	// Обнуляем все таймеры.
   {
     MainTimer[index].GoToTask = Idle;
     MainTimer[index].Time = 0;
@@ -49,7 +49,7 @@ SetTask (TPTR TS) {
   while (TaskQueue[index] != Idle)	// Прочесываем очередь задач на предмет свободной ячейки
   {				// с значением Idle - конец очереди.
     index++;
-    if (index == TaskQueueSize + 1)	// Если очередь переполнена то выходим не солоно хлебавши
+    if (index == TASK_QUEUE_SIZE + 1)	// Если очередь переполнена то выходим не солоно хлебавши
     {
       if (nointerrupted)
 	sei ();			// Если мы не в прерывании, то разрешаем прерывания
@@ -76,7 +76,7 @@ SetTimerTask (TPTR TS, u16 NewTime) {
     cli ();
     nointerrupted = 1;
   }
-  for (index = 0; index != MainTimerQueueSize + 1; ++index)	//Прочесываем очередь таймеров
+  for (index = 0; index != MAIN_TIMER_QUEUE_SIZE + 1; ++index)	//Прочесываем очередь таймеров
   {
     if (MainTimer[index].GoToTask == TS)	// Если уже есть запись с таким адресом
     {
@@ -86,7 +86,7 @@ SetTimerTask (TPTR TS, u16 NewTime) {
       return;			// Выходим. Раньше был код успешной операции. Пока убрал
     }
   }
-  for (index = 0; index != MainTimerQueueSize + 1; ++index)	// Если не находим похожий таймер, то ищем любой пустой      
+  for (index = 0; index != MAIN_TIMER_QUEUE_SIZE + 1; ++index)	// Если не находим похожий таймер, то ищем любой пустой      
   {
     if (MainTimer[index].GoToTask == Idle) {
       MainTimer[index].GoToTask = TS;	// Заполняем поле перехода задачи
@@ -116,11 +116,11 @@ TaskManager (void) {
   }
 
   else {
-    for (index = 0; index != TaskQueueSize; index++)	// В противном случае сдвигаем всю очередь
+    for (index = 0; index != TASK_QUEUE_SIZE; index++)	// В противном случае сдвигаем всю очередь
     {
       TaskQueue[index] = TaskQueue[index + 1];
     }
-    TaskQueue[TaskQueueSize] = Idle;	// В последнюю запись пихаем затычку
+    TaskQueue[TASK_QUEUE_SIZE] = Idle;	// В последнюю запись пихаем затычку
     sei ();			// Разрешаем прерывания
     (GoToTask) ();		// Переходим к задаче
   }
@@ -137,7 +137,7 @@ inline void
 TimerService (void) {
   u08             index;
 
-  for (index = 0; index != MainTimerQueueSize + 1; index++)	// Прочесываем очередь таймеров
+  for (index = 0; index != MAIN_TIMER_QUEUE_SIZE + 1; index++)	// Прочесываем очередь таймеров
   {
     if (MainTimer[index].GoToTask == Idle)
       continue;			// Если нашли пустышку - щелкаем следующую итерацию
