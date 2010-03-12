@@ -6,7 +6,7 @@
 #   define Interrupt_Flag		SREG_I
 
 //RTOS Config
-#   ifdef VR_ATtiny2313__
+#   ifdef __AVR_ATtiny2313__
 #      define RTOS_ISR  			TIMER0_COMPA_vect
 #   endif
        /*  */
