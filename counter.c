@@ -2,8 +2,7 @@
 #include <EERTOS.h>
 
 //RTOS Interrupt
-ISR (TIMER0_COMPA_vect) {
-//ISR (RTOS_ISR) {
+ISR (RTOS_ISR) {
   timerService ();
 }
 
