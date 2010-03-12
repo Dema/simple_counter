@@ -1,6 +1,6 @@
 #include <HAL.h>
 inline void
-InitAll (void) {
+initAll (void) {
 
 //InitPort
 

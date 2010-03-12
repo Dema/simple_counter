@@ -49,6 +49,6 @@
 #   define HOLD_KEY_DELAY 500/TIMER_TICK_MILLIS
 
 
-extern void     InitAll (void);
+extern void     initAll (void);
 
 #endif /*  */

@@ -2,7 +2,7 @@
 
 //RTOS Запуск системного таймера
 inline void
-RunRTOS (void) {
+runRTOS (void) {
 
 #ifdef __AVR_ATtiny2313__
   TCCR0A = 1 << WGM01;		// Freq = CK/64 - Установить режим и предделитель

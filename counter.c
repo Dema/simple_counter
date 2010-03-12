@@ -4,7 +4,7 @@
 //RTOS Interrupt
 ISR (TIMER0_COMPA_vect) {
 //ISR (RTOS_ISR) {
-  TimerService ();
+  timerService ();
 }
 
 // Глобальные переменные ====================================================
@@ -70,18 +70,18 @@ number2digits (void);
 void
 checkButtons (void) {
   if (buttons.plusButtonPressed || buttons.minusButtonPressed) {
-    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsOff, KEYSCAN_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
 void
 checkButtonsOn (void) {
   if (!(BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
-    SetTimerTask (checkDebouncedButtonsOn, DEBOUNCE_DELAY);
+    setTimerTask (checkDebouncedButtonsOn, DEBOUNCE_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
@@ -93,20 +93,20 @@ checkDebouncedButtonsOn (void) {
   buttons.minusButtonPressed = !(b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
   if (buttons.plusButtonPressed || buttons.minusButtonPressed) {
-    SetTask (processButtons);
-    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
-    SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
+    setTask (processButtons);
+    setTimerTask (checkButtonsOff, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
   } else {
-    SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsOn, KEYSCAN_DELAY);
   }
 }
 
 void
 checkButtonsOff (void) {
   if ((BUTTONS_PIN & (1 << BUTTON_PLUS | 1 << BUTTON_MINUS))) {
-    SetTimerTask (checkDebouncedButtonsOff, DEBOUNCE_DELAY);
+    setTimerTask (checkDebouncedButtonsOff, DEBOUNCE_DELAY);
   } else {
-    SetTimerTask (checkButtonsOff, KEYSCAN_DELAY);
+    setTimerTask (checkButtonsOff, KEYSCAN_DELAY);
   }
 
 }
@@ -136,7 +136,7 @@ checkButtonsHold (void) {
     !(b & (1 << BUTTON_MINUS)) ? 1 : 0;
 
   if (buttons.plusButtonHolded || buttons.minusButtonHolded) {
-    SetTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
+    setTimerTask (checkButtonsHold, HOLD_KEY_DELAY);
   }
 
   checkButtons ();
@@ -180,7 +180,7 @@ updateIndicator (void) {
   if (currentIndicatorDigit > 2)
     currentIndicatorDigit = 0;
 
-  SetTimerTask (updateIndicator, INDICATOR_DELAY);
+  setTimerTask (updateIndicator, INDICATOR_DELAY);
 }
 
 void
@@ -202,17 +202,17 @@ void __attribute__ ((naked)) main (void) {
 
   number2digits();
 
-  InitAll ();			// Инициализируем периферию
-  InitRTOS ();			// Инициализируем ядро
-  RunRTOS ();			// Старт ядра
+  initAll ();			// Инициализируем периферию
+  initRTOS ();			// Инициализируем ядро
+  runRTOS ();			// Старт ядра
 
 // Запуск фоновых задач.
-  SetTimerTask (checkButtonsOn, KEYSCAN_DELAY);
-  SetTimerTask (updateIndicator, INDICATOR_DELAY);
+  setTimerTask (checkButtonsOn, KEYSCAN_DELAY);
+  setTimerTask (updateIndicator, INDICATOR_DELAY);
 
   while (1)			// Главный цикл диспетчера
   {
     wdt_reset ();		// Сброс собачьего таймера
-    TaskManager ();		// Вызов диспетчера
+    taskManager ();		// Вызов диспетчера
   }
 }

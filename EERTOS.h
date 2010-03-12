@@ -3,19 +3,19 @@
 
 #   include <HAL.h>
 #   include <EERTOSHAL.h>
-extern void     InitRTOS (void);
+extern void     initRTOS (void);
 
-extern void     Idle (void);
+extern void     idle (void);
 
 typedef void    (*TPTR) (void);
 
-extern void     SetTask (TPTR TS);
+extern void     setTask (TPTR task);
 
-extern void     SetTimerTask (TPTR TS, u16 NewTime);
+extern void     setTimerTask (TPTR task, u16 newTime);
 
-extern void     TaskManager (void);
+extern void     taskManager (void);
 
-extern void     TimerService (void);
+extern void     timerService (void);
 
 //RTOS Errors Пока не используются.
 #   define TaskSetOk			 'A'

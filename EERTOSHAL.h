@@ -13,6 +13,6 @@
 
 #   define	TASK_QUEUE_SIZE		5
 #   define MAIN_TIMER_QUEUE_SIZE  5
-extern void     RunRTOS (void);
+extern void     runRTOS (void);
 
 #endif /*  */
